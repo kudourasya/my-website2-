@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Presentasi Pesantren Kilat 2026</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #001a33;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; /* Mencegah scroll agar fokus pada slide */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Slide */
+        .slider-container {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide {
+            display: none; /* Sembunyikan semua slide di awal */
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img, video {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #000;
+        }
+
+        .caption {
+            color: #d4af37;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Tombol Navigasi */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(212, 175, 55, 0.8);
+            border: none;
+            color: #001a33;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            font-weight: bold;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .nav-btn:hover { background: #f1c40f; }
+        .prev { left: -70px; }
+        .next { right: -70px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsif untuk layar kecil */
+        @media (max-width: 1100px) {
+            .prev { left: 10px; }
+            .next { right: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slider-container">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+
+        <div class="slide active">
+            <img src="P.png" alt="Banner Utama">
+            <div class="caption">Banner Utama</div>
+        </div>
+
+        <div class="slide">
+            <video controls>
+                <source src="video1.mp4" type="video/mp4">
+            </video>
+            <div class="caption">Materi Video 1</div>
+        </div>
+
+        <div class="slide">
+            <video controls>
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+            <div class="caption">Kegiatan Santri</div>
+        </div>
+
+        <div class="slide">
+            <video controls>
+                <source src="video3.mp4" type="video/mp4">
+            </video>
+            <div class="caption">Dokumentasi Penutup</div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function changeSlide(n) {
+            // Hentikan video yang sedang diputar sebelum pindah slide
+            const currentVideo = slides[currentSlide].querySelector('video');
+            if (currentVideo) currentVideo.pause();
+
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Navigasi keyboard (panah kiri/kanan)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowLeft") changeSlide(-1);
+            if (e.key === "ArrowRight") changeSlide(1);
+        });
+    </script>
+
+</body>
+</html>
