@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slide Presentasi Pesantren Kilat 2026</title>
+    <title>Slide Pesantren Kilat 2026 - Fixed</title>
     <style>
         body, html {
             margin: 0;
@@ -12,29 +12,31 @@
             height: 100%;
             background-color: #001a33;
             font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; /* Mencegah scroll agar fokus pada slide */
+            overflow: hidden;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            color: white;
         }
 
-        /* Container Slide */
         .slider-container {
             position: relative;
-            width: 90%;
-            max-width: 1000px;
-            height: 80vh;
+            width: 95%;
+            max-width: 1100px;
+            height: 75vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            outline: none; /* Menghilangkan border biru saat fokus */
         }
 
         .slide {
-            display: none; /* Sembunyikan semua slide di awal */
+            display: none;
             width: 100%;
             height: 100%;
             text-align: center;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
         .active {
@@ -44,106 +46,171 @@
             align-items: center;
         }
 
-        img, video {
+        .content-view {
             max-width: 100%;
-            max-height: 70vh;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-height: 90%;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            cursor: pointer;
             background: #000;
+            transition: transform 0.2s;
         }
+
+        .content-view:hover { transform: scale(1.01); }
 
         .caption {
             color: #d4af37;
-            margin-top: 20px;
-            font-size: 1.5rem;
+            margin-top: 15px;
+            font-size: 1.3rem;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Tombol Navigasi */
+        /* Navigasi */
         .nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(212, 175, 55, 0.8);
+            background: rgba(212, 175, 55, 0.9);
             border: none;
             color: #001a33;
-            padding: 15px 20px;
+            width: 50px;
+            height: 50px;
             font-size: 1.5rem;
             cursor: pointer;
             border-radius: 50%;
-            font-weight: bold;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: 0.3s;
-            z-index: 10;
         }
 
-        .nav-btn:hover { background: #f1c40f; }
-        .prev { left: -70px; }
-        .next { right: -70px; }
+        .nav-btn:hover { background: #f1c40f; transform: translateY(-50%) scale(1.1); }
+        .prev { left: -25px; }
+        .next { right: -25px; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .fullscreen-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #d4af37, #f1c40f);
+            color: #001a33;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
 
-        /* Responsif untuk layar kecil */
-        @media (max-width: 1100px) {
-            .prev { left: 10px; }
-            .next { right: 10px; }
+        /* Fullscreen Mode */
+        .content-view:fullscreen {
+            object-fit: contain;
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .prev { left: 5px; }
+            .next { right: 5px; }
+            .caption { font-size: 1rem; }
         }
     </style>
 </head>
-<body>
-
-    <div class="slider-container">
-        <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-        <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+<body tabindex="0"> <div class="slider-container">
+        <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous">&#10094;</button>
+        <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next">&#10095;</button>
 
         <div class="slide active">
-            <img src="P.png" alt="Banner Utama">
+            <img src="P.png" class="content-view" alt="Banner" onclick="requestFull(this)">
             <div class="caption">Banner Utama</div>
         </div>
 
         <div class="slide">
-            <video controls>
+            <video class="content-view" controls onclick="requestFull(this)">
                 <source src="video1.mp4" type="video/mp4">
             </video>
             <div class="caption">Materi Video 1</div>
         </div>
 
         <div class="slide">
-            <video controls>
+            <video class="content-view" controls onclick="requestFull(this)">
                 <source src="video2.mp4" type="video/mp4">
             </video>
             <div class="caption">Kegiatan Santri</div>
         </div>
 
         <div class="slide">
-            <video controls>
+            <video class="content-view" controls onclick="requestFull(this)">
                 <source src="video3.mp4" type="video/mp4">
             </video>
             <div class="caption">Dokumentasi Penutup</div>
         </div>
     </div>
 
+    <button class="fullscreen-btn" onclick="presentNow()">MULAI PRESENTASI (FULLSCREEN)</button>
+
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
 
         function changeSlide(n) {
-            // Hentikan video yang sedang diputar sebelum pindah slide
+            // Berhentikan video di slide saat ini
             const currentVideo = slides[currentSlide].querySelector('video');
             if (currentVideo) currentVideo.pause();
 
+            // Ganti slide
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + n + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
         }
 
-        // Navigasi keyboard (panah kiri/kanan)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "ArrowLeft") changeSlide(-1);
-            if (e.key === "ArrowRight") changeSlide(1);
+        function requestFull(elem) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            }
+        }
+
+        function presentNow() {
+            const activeElem = slides[currentSlide].querySelector('.content-view');
+            requestFull(activeElem);
+        }
+
+        // PERBAIKAN BUG NAVIGASI KEYBOARD
+        window.addEventListener('keydown', function(e) {
+            if (e.key === "ArrowLeft") {
+                changeSlide(-1);
+            } else if (e.key === "ArrowRight") {
+                changeSlide(1);
+            } else if (e.key.toLowerCase() === "f") {
+                presentNow();
+            }
         });
+
+        // OPTIONAL: Fitur Swipe untuk HP
+        let touchstartX = 0;
+        let touchendX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleGesture();
+        });
+
+        function handleGesture() {
+            if (touchendX < touchstartX - 50) changeSlide(1); // Swipe kiri
+            if (touchendX > touchstartX + 50) changeSlide(-1); // Swipe kanan
+        }
+
+        // Pastikan fokus pada window saat pertama kali buka
+        window.onload = () => { window.focus(); };
     </script>
 
 </body>
